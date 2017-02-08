@@ -1,9 +1,10 @@
 package io.pivotal.literx;
 
+import org.junit.Test;
+
 import io.pivotal.literx.domain.User;
 import io.pivotal.literx.repository.ReactiveRepository;
 import io.pivotal.literx.repository.ReactiveUserRepository;
-import org.junit.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -27,12 +28,20 @@ public class Part04Transform {
 				.verifyComplete();
 	}
 
-	// TODO Capitalize the user username, firstname and lastname
 	Mono<User> capitalizeOne(Mono<User> mono) {
-		return null;
+		return mono.map(user -> {
+			return capitalizeUser(user);
+		});
 	}
 
-//========================================================================================
+	private User capitalizeUser(User user) {
+		String username = user.getUsername().toUpperCase();
+		String firstname = user.getFirstname().toUpperCase();
+		String lastname = user.getLastname().toUpperCase();
+		return new User(username, firstname, lastname);
+	}
+
+	//========================================================================================
 
 	@Test
 	public void transformFlux() {
@@ -48,7 +57,7 @@ public class Part04Transform {
 
 	// TODO Capitalize the users username, firstName and lastName
 	Flux<User> capitalizeMany(Flux<User> flux) {
-		return null;
+		return flux.map(user -> capitalizeUser(user));
 	}
 
 //========================================================================================
@@ -67,7 +76,7 @@ public class Part04Transform {
 
 	// TODO Capitalize the users username, firstName and lastName using asyncCapitalizeUser()
 	Flux<User> asyncCapitalizeMany(Flux<User> flux) {
-		return null;
+		return flux.flatMap(user -> asyncCapitalizeUser(user));
 	}
 
 	Mono<User> asyncCapitalizeUser(User u) {
